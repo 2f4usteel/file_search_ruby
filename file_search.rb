@@ -1,37 +1,41 @@
 require './shell_command.rb'
+require './config.rb'
 
 module FileSearch
   module_function
   
-  #find the file in current directory
-  def find file_name
+  #Function to find the time and display the output in the specified format
+  def self.find file_name
     begin 
+      #Get the current time in seconds
       start_time = Time.now.to_f
-      all_file = "\'" + "#{file_name}" + ".*" + "\'" 
-      command = %Q[find $PWD -type f -name #{all_file}]
-      # command = %Q[find ./ -xdev -name  #{all_file}] 
+
+      #Throwing run time error if the O.S based search command was not found
+      raise "OS Type could not be found" if Config.find_os_based_command.nil?
+      
+      file_pattern = "\'#{file_name}*\'" 
+      
+      command = %Q[#{Config.find_os_based_command} #{file_pattern}]
+      
       result = ShellCommand.run command
       result_array = result.split("\n")
-      if result_array.any?
-        i = 1
-        result_array.each do |path|
-          puts "#{i}." + " #{path}"
+
+      #checking the result is present and formatting 
+      if !result_array.empty?
+        result_array.each_with_index{ |path, index|
+          puts "#{index+1}." + " #{path}"
           time_taken = Time.now.to_f - start_time 
           puts "Time Taken: #{time_taken} seconds"
-          i = i + 1
-        end
+        }
+        #Returning nothing to avoid printing of result_array again
         return
       else 
-        #Throw run time error if the file is not found
-        raise "No such file: #{file_name} found"
+        puts "No such file: \'#{file_name}\' found"
       end
+
     rescue Exception => error
       raise "#{error.message}"
     end  
-  end
-
-  def find_in_entire_system
-    puts "finding the file in the entire system"
   end
 
 end
