@@ -1,11 +1,12 @@
 module Config 
 
   #Search command based on O.S - Replace the commands if necessary 
+  # find/ -xdev -name - search in the entire system
   SEARCH_COMMAND = {
     :unix_based_systems => 'find $PWD -type f -name', 
-    :window_based_system => 'windows based system',
-    :osx_based_system => 'osx based system',
-    :mac_based_system => 'mac based system'
+    :window_based_system => 'dir /b/s', #Not tested 
+    :osx_based_system => 'find $PWD -type f -name',
+    :mac_based_system => 'find $(pwd) . -name' #Not tested 
   }
 
   #Function to check if O.S is windows

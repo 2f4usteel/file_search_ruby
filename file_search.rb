@@ -3,6 +3,21 @@ require './config.rb'
 
 module FileSearch
   module_function
+
+  #Function to get file file pattern matching
+  def self.find_file_pattern file_name
+    if Config.windows?
+      return "#{file_name}*"
+    elsif Config.mac?
+      return "\'#{file_name}*\'" 
+    elsif Config.unix?
+      return "\'#{file_name}*\'" 
+    elsif Config.linux?
+      return "\'#{file_name}*\'" 
+    else
+      return "\'#{file_name}*\'" 
+    end
+  end
   
   #Function to find the time and display the output in the specified format
   def self.find file_name
@@ -13,7 +28,8 @@ module FileSearch
       #Throwing run time error if the O.S based search command was not found
       raise "OS Type could not be found" if Config.find_os_based_command.nil?
       
-      file_pattern = "\'#{file_name}*\'" 
+      #Getting the file pattern based on O.S
+      file_pattern = self.find_file_pattern file_name
       
       command = %Q[#{Config.find_os_based_command} #{file_pattern}]
       
